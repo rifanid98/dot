@@ -1,4 +1,0 @@
-GET http://localhost:8084/api/v1/accounts
-Accept: application/json
-
-###

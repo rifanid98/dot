@@ -596,7 +596,7 @@
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "jti@email.com"
+                    "example": "dot@email.com"
                 },
                 "password": {
                     "type": "string",
@@ -614,7 +614,7 @@
             "properties": {
                 "email": {
                     "type": "string",
-                    "example": "jti@email.com"
+                    "example": "dot@email.com"
                 },
                 "password": {
                     "type": "string",
