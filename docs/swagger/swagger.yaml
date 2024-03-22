@@ -1,0 +1,448 @@
+definitions:
+  auth.ChangePassword:
+    properties:
+      old_password:
+        example: "123456"
+        type: string
+      password:
+        example: "123456"
+        type: string
+      password_confirm:
+        example: "123456"
+        type: string
+    required:
+    - old_password
+    - password
+    - password_confirm
+    type: object
+  auth.Login:
+    properties:
+      email:
+        example: jti@email.com
+        type: string
+      password:
+        example: password
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.Register:
+    properties:
+      email:
+        example: jti@email.com
+        type: string
+      password:
+        example: password
+        minLength: 6
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  auth.TokenResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        type: string
+      access_token_exp:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+      refresh_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+        type: string
+      refresh_token_exp:
+        example: "2023-01-01T00:00:00Z"
+        type: string
+    type: object
+  books.Book:
+    properties:
+      author:
+        type: string
+      name:
+        type: string
+    required:
+    - author
+    - name
+    type: object
+  books.BookPartial:
+    properties:
+      author:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Get Token.
+      parameters:
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.TokenResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Get Token.
+      tags:
+      - Auth
+  /api/v1/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Revoke Token.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Revoke Token.
+      tags:
+      - Auth
+  /api/v1/auth/password/change:
+    post:
+      consumes:
+      - application/json
+      description: Change Password.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.ChangePassword'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Change Password.
+      tags:
+      - Auth
+  /api/v1/auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register Account.
+      parameters:
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/auth.Register'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Register Account.
+      tags:
+      - Auth
+  /api/v1/auth/relogin:
+    post:
+      consumes:
+      - application/json
+      description: Get Refresh Token.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.TokenResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Get Refresh Token.
+      tags:
+      - Auth
+  /api/v1/auth/validate:
+    post:
+      consumes:
+      - application/json
+      description: Validate Token.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Validate Token.
+      tags:
+      - Auth
+  /api/v1/books:
+    get:
+      consumes:
+      - application/json
+      description: List books.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: "1"
+        in: query
+        name: page
+        type: string
+      - description: "10"
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: List books.
+      tags:
+      - Books
+    post:
+      consumes:
+      - application/json
+      description: Create .
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/books.Book'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Create book.
+      tags:
+      - Books
+  /api/v1/books/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete .
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 65c1de91056ae9755c64ffba
+        in: path
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Delete book.
+      tags:
+      - Books
+    get:
+      consumes:
+      - application/json
+      description: Get book.
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 65c1de91056ae9755c64ffba
+        in: path
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Get book.
+      tags:
+      - Books
+    patch:
+      consumes:
+      - application/json
+      description: Update .
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 65c1de91056ae9755c64ffba
+        in: path
+        name: id
+        type: string
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/books.BookPartial'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Update book.
+      tags:
+      - Books
+    put:
+      consumes:
+      - application/json
+      description: Update .
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 65c1de91056ae9755c64ffba
+        in: path
+        name: id
+        type: string
+      - description: body
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/books.Book'
+      produces:
+      - application/json
+      responses:
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "422":
+          description: Unprocessable Entity
+        "500":
+          description: Internal Server Error
+      summary: Update book.
+      tags:
+      - Books
+  /api/v1/health:
+    get:
+      consumes:
+      - application/json
+      description: Health Check.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Health Check.
+      tags:
+      - Health
+swagger: "2.0"
