@@ -1,4 +1,8 @@
-# Codebase
+# DOT Backend
+
+### Disclaimer
+
+> This is a project created for the purposes of a test case from the hiring process at [DOT Indonesia](https://www.dot.co.id/)
 
 ## Design Architecture
 
@@ -23,7 +27,7 @@ examples include repository, apicall and redis.
 
 ## Getting Started
 
-- The system must be ensured to have MongoDB and Redis
+- The system must be ensured to have MySQL, MongoDB (optional by setting DATABASE_USE=2) and Redis
 - Install dependencies ```go mod download``` or ```go mod tidy```.
 - Run the server, open terminal and run ```go run main.go```.
 - Run the scheduler, open new terminal and run ```go run main.go cron```.
@@ -40,4 +44,3 @@ examples include repository, apicall and redis.
 - MongoDB
 - JWT
 - Redis
-# dot
